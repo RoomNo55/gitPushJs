@@ -14,28 +14,34 @@ const files = fs.readdirSync(sourceDir);           // Reads the content of the s
 
 
 async function uploadToGit() {
+  // Move .feature and .java files to their respective directories
+  files.forEach((file) => {
+    if (file.endsWith(".feature")) {
+      const sourceFeatureFilePath = path.join(sourceDir, file);
+      const destFeatureFilePath = path.join(featureDestDir, file);
 
-files.forEach((file) => {
-  // Check if the file is a .feature file
-  if (file.endsWith('.feature')) {
-    const sourceFeatureFilePath = path.join(sourceDir, file);
-    const destFeatureFilePath = path.join(featureDestDir, file);  // Move to feature destination directory
+      if (!fs.existsSync(destFeatureFilePath)) {
+        fs.renameSync(sourceFeatureFilePath, destFeatureFilePath);
+        console.log(`Feature file moved: ${file}`);
+      } else {
+        console.log(`File already exists: ${file}`);
+      }
+    }
 
-    if (!fs.existsSync(destFeatureFilePath)) {
+    if (file.endsWith(".java")) {
+      const sourceJavaFilePath = path.join(sourceDir, file);
+      const destJavaFilePath = path.join(javaDestDir, file);
 
-    // Move the file from source to destination
-    fs.renameSync(sourceFeatureFilePath, destFeatureFilePath);           // Synchronous file move
-    console.log(`Feature file automatically moved to destination folder: ${file}`);
-  } else {
-    console.log(`File already exists in destination: ${file}`);
-  }
-}
-})
+      if (!fs.existsSync(destJavaFilePath)) {
+        fs.renameSync(sourceJavaFilePath, destJavaFilePath);
+        console.log(`Java file moved: ${file}`);
+      } else {
+        console.log(`File already exists: ${file}`);
+      }
+    }
+  });
+
 // Git Operation
-// Define the directories
-const featureDir = path.join(featureDestDir, 'features');
-const stepDefDir = path.join(javaDestDir, 'step-definitions');
-
 // Initialize git
 const git = simpleGit();
 
@@ -139,8 +145,10 @@ async function gitProcess() {
   await git.push(['-u', 'origin', branchName]);
   console.log('Files pushed to Git');
 }
-
 await gitProcess();
-
 }
+
+
 uploadToGit()
+
+
