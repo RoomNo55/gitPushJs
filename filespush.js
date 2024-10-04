@@ -138,7 +138,7 @@ async function gitProcess() {
   // Check for merge conflicts after pulling
   const status = await git.status();
   if (status.conflicted.length > 0) {
-    console.log('------>')
+
     console.error('There are unresolved merge conflicts. Please resolve them and commit the changes.');
     console.log('Conflicted files:', status.conflicted);
     return; // Exit if there are unresolved conflicts
