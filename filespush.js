@@ -93,6 +93,7 @@ async function gitProcess() {
     // Commit the changes
     await git.commit('Added .feature and .java files to features and step-definitions');
 
+
     await git.push(['-u', 'origin', branchName ]);
 
     // Stash any untracked or modified files
@@ -105,13 +106,8 @@ async function gitProcess() {
     await git.stash('pop');
 
     // Push the changes
-    const newStatus = await git.status();
-    if (newStatus.ahead > 0) {
     await git.push('origin', branchName);
     console.log('Files pushed to Git');
-  } else {
-    console.log('No changes committed: Nothing to push.');
-  } 
   } catch (err) {
     console.error('Git process failed:', err);
   }
