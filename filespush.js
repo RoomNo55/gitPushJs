@@ -105,8 +105,13 @@ async function gitProcess() {
     await git.stash('pop');
 
     // Push the changes
+    const newStatus = await git.status();
+    if (newStatus.ahead > 0) {
     await git.push('origin', branchName);
     console.log('Files pushed to Git');
+  } else {
+    console.log('No changes committed: Nothing to push.');
+  } 
   } catch (err) {
     console.error('Git process failed:', err);
   }
