@@ -91,14 +91,30 @@ async function gitProcess() {
     await git.add(['features/*.feature', 'step-definitions/*.java', 'filespush.js']);
     // Commit the changes
     await git.commit('Added .feature and .java files to features and step-definitions');
-  } catch (commitError) {
-    if (commitError.message.includes('unmerged files')) {
-      console.error('Cannot commit due to unmerged files. Please resolve conflicts before proceeding.');
-      return; // Exit the process if there are unresolved conflicts
-    } else {
-      console.error('Error during commit:', commitError);
-      return; // Exit for other commit errors
+
+
+    await git.push(['-u', 'origin', branchName ]);
+
+    // Stash any untracked or modified files
+    await git.stash({ '--include-untracked': null });
+
+    // Pull the latest changes from the remote repository
+    try {
+      await git.pull('origin', branchName, { '--rebase': 'true' }); // Use rebase to avoid merge commits
+    } catch (pullError) {
+      console.error('Error pulling changes:', pullError);
+      return; // Exit the process if pulling fails
     }
+
+    // Reapply the stashed changes
+    await git.stash('pop');
+
+    // Push the changes
+    await git.push('origin', branchName);
+    console.log('Files pushed to Git');
+  }  
+  catch (err) {
+    console.error('Git process failed:', err);
   }
 
   // Check if a rebase is in progress and abort it if necessary
