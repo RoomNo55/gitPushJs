@@ -87,6 +87,7 @@ if (!originRemote) {
 const branchName = 'main';
 async function gitProcess() {
   try {
+       
     // Add only the moved files to Git
     await git.add(['features/*.feature', 'step-definitions/*.java', 'filespush.js']);
     // Commit the changes
