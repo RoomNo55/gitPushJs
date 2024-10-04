@@ -84,6 +84,7 @@ if (!originRemote) {
 }
 
 const branchName = 'main';
+const remoteName = 'origin';
 // Add to Git, commit, stash, pull, and push
 async function gitProcess() {
   try {
@@ -109,7 +110,7 @@ async function gitProcess() {
     // await git.push('origin', branchName);
     // console.log('Files pushed to Git');
 
-    const pushResponse = await git.push(['-u', origin, branchName]);
+    const pushResponse = await git.push(['-u', remoteName, branchName]);
     
     // Check if there are any commits done
     if (pushResponse && pushResponse.trim().includes("up to date")) {
