@@ -110,7 +110,7 @@ async function gitProcess() {
     // await git.push('origin', branchName);
     // console.log('Files pushed to Git');
 
-    const pushResponse = await git.push(['-u', remoteName, branchName]);
+    const pushResponse = await git.pull(['-u', remoteName, branchName]);
     
     // Check if there are any commits done
     if (pushResponse && pushResponse && pushResponse.length > 0) {
