@@ -93,6 +93,14 @@ async function gitProcess() {
     // Commit the changes
     await git.commit('Added .feature and .java files to features and step-definitions');
 
+    // Check the status of the repository to see if there are any changes
+const status = await git.status();
+  if(status.staged.length === 0) {
+      console.log('No changes committed: Files are already up to date.');
+return;
+// Exit early since there are no changes to commit
+    }
+
     await git.push(['-u', 'origin', branchName ]);
 
     // Stash any untracked or modified files
