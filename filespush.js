@@ -103,7 +103,6 @@ async function gitProcess() {
 
     // Push the changes
     await git.push('origin', branchName);
-    console.log('Files pushed to Git');
   }  
   catch (err) {
     console.error('Git process failed:', err);
