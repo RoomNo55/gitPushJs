@@ -89,6 +89,8 @@ async function moveFiles() {
       } else if (file === 'filespush.js') {
         // Leave the filespush.js in the current directory
         // console.log('filespush.js will be added to Git.');
+      } else if (file === 'node_modules') {
+        // console.log('node_modules will be added to Git.');
       } // else {
         // console.log(`Ignored ${file}`);
       // }
