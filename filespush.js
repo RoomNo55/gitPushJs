@@ -83,42 +83,7 @@ if (!originRemote) {
   console.log("Remote origin already exists, skipping addRemote.");
 }
 
-// Move specific files to respective directories
-async function moveFiles() {
-  try {
-    // const files = fs.readdir(sourceDir);
-
-    for (const file of files) {
-      const ext = path.extname(file);
-      const sourcePath = path.join(sourceDir, file);
-
-      if (ext === '.feature') {
-        const destPath = path.join(featureDir, file);
-        // Ensure the destination folder exists before moving
-        await fs.ensureDir(featureDir);
-        await fs.move(sourcePath, destPath);
-        console.log(`Moved ${file} to ${destPath}`);
-      } else if (ext === '.java') {
-        const destPath = path.join(stepDefDir, file);
-        // Ensure the destination folder exists before moving
-        await fs.ensureDir(stepDefDir);
-        await fs.move(sourcePath, destPath);
-        console.log(`Moved ${file} to ${destPath}`);
-      } else if (file === 'filespush.js') {
-        // Leave the filespush.js in the current directory
-        // console.log('filespush.js will be added to Git.');
-      } else if (folder === 'node_modules') {
-        // console.log('node_modules will be added to Git.');
-      } // else {
-        // console.log(`Ignored ${file}`);
-      // }
-    }
-  } catch (err) {
-    // console.error('Error moving files:', err);
-  }
-}
-await moveFiles();
-
+const branchName = 'main';
 // Add to Git, commit, stash, pull, and push
 async function gitProcess() {
   try {
@@ -128,17 +93,19 @@ async function gitProcess() {
     // Commit the changes
     await git.commit('Added .feature and .java files to features and step-definitions');
 
+    await git.push(['-u', 'origin', branchName ]);
+
     // Stash any untracked or modified files
     await git.stash({ '--include-untracked': null });
 
     // Pull the latest changes from the remote repository
-    await git.pull('origin', 'main', { '--rebase': 'true' }); // Use rebase to avoid merge commits
+    await git.pull('origin', branchName, { '--rebase': 'true' }); // Use rebase to avoid merge commits
 
     // Reapply the stashed changes
     await git.stash('pop');
 
     // Push the changes
-    await git.push('origin', 'main');
+    await git.push('origin', branchName);
     console.log('Files pushed to Git');
   } catch (err) {
     console.error('Git process failed:', err);
