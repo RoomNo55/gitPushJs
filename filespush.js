@@ -14,13 +14,13 @@ const files = fs.readdirSync(sourceDir);           // Reads the content of the s
 
 
 async function uploadToGit() {
-  
+
 files.forEach((file) => {
   // Check if the file is a .feature file
   if (file.endsWith('.feature')) {
     const sourceFeatureFilePath = path.join(sourceDir, file);
     const destFeatureFilePath = path.join(featureDestDir, file);  // Move to feature destination directory
-    
+
     if (!fs.existsSync(destFeatureFilePath)) {
 
     // Move the file from source to destination
@@ -92,31 +92,63 @@ async function gitProcess() {
     // Commit the changes
     await git.commit('Added .feature and .java files to features and step-definitions');
 
+
+    await git.push(['-u', 'origin', branchName ]);
+
+    // Stash any untracked or modified files
+    await git.stash({ '--include-untracked': null });
+
     // Pull the latest changes from the remote repository
     try {
-      await git.pull('origin', branchName); // Use rebase to avoid merge commits
+      await git.pull('origin', branchName, { '--rebase': 'true' }); // Use rebase to avoid merge commits
     } catch (pullError) {
       console.error('Error pulling changes:', pullError);
       return; // Exit the process if pulling fails
     }
 
+    // Reapply the stashed changes
+    await git.stash('pop');
 
     // Push the changes
     await git.push('origin', branchName);
+    console.log('Files pushed to Git');
   }  
   catch (err) {
     console.error('Git process failed:', err);
   }
 
+  // Check if a rebase is in progress and abort it if necessary
+  const rebaseDirExists = await git.checkIsRepo() && await git.raw(['status']);
+  if (rebaseDirExists.includes('You have unmerged paths') || rebaseDirExists.includes('rebase in progress')) {
+    console.log('Aborting existing rebase...');
+    await git.rebase(['--continue']);
+  }
+
+  // Stash any untracked or modified files
+  await git.stash({ '--include-untracked': null });
+
+  // Pull the latest changes from the remote repository
+  try {
+    await git.pull('origin', branchName, { '--rebase': 'true' });
+  } catch (pullError) {
+    console.error('Error pulling changes:', pullError);
+    return; // Exit if the pull fails
+  }
+
   // Check for merge conflicts after pulling
   const status = await git.status();
   if (status.conflicted.length > 0) {
-
+    console.log('------>')
     console.error('There are unresolved merge conflicts. Please resolve them and commit the changes.');
     console.log('Conflicted files:', status.conflicted);
     return; // Exit if there are unresolved conflicts
   }
 
+  // Now restore only the relevant directories
+  await git.checkout(['origin/main', '--', 'features/', 'step-definitions/']);
+
+  // Reapply the stashed changes
+  await git.stash('pop');
 
   // Now push the changes to the remote
   await git.push(['-u', 'origin', branchName]);
@@ -132,5 +164,4 @@ async function main() {
 main();
 
 }
-
-uploadToGit();
+uploadToGit()
