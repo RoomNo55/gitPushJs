@@ -149,6 +149,7 @@ async function gitProcess() {
 
   // Reapply the stashed changes
   await git.stash('pop');
+  console.log('-----')
 
   // Now push the changes to the remote
   await git.push(['-u', 'origin', branchName]);
