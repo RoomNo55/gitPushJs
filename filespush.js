@@ -110,8 +110,7 @@ async function gitProcess() {
     await git.stash('pop');
 
     // Push the changes
-    await git.push('origin', branchName);
-    console.log('Files pushed to Git');
+    await git.push('origin', branchName, { '--rebase': 'true' });
   }  
   catch (err) {
     console.error('Git process failed:', err);
