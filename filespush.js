@@ -100,7 +100,7 @@ async function gitProcess() {
 
     // Pull the latest changes from the remote repository
     try {
-      await git.pull('origin', branchName, { '--rebase': 'true' }); // Use rebase to avoid merge commits
+      await git.pull('origin', branchName,{ '--rebase': 'true' }); // Use rebase to avoid merge commits
     } catch (pullError) {
       console.error('Error pulling changes:', pullError);
       return; // Exit the process if pulling fails
@@ -110,7 +110,7 @@ async function gitProcess() {
     await git.stash('pop');
 
     // Push the changes
-    await git.push('origin', branchName, { '--rebase': 'true' });
+    await git.push('origin', branchName,{ '--rebase': 'true' });
   }  
   catch (err) {
     console.error('Git process failed:', err);
@@ -150,7 +150,7 @@ async function gitProcess() {
   await git.stash('pop');
 
   // Now push the changes to the remote
-  await git.push(['-u', 'origin', branchName]);
+  await git.push(['-u', 'origin', branchName,{ '--rebase': 'true' }]);
   console.log('Files pushed to Git');
 }
 
