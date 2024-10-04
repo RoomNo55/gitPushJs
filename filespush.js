@@ -89,7 +89,7 @@ async function moveFiles() {
       } else if (file === 'filespush.js') {
         // Leave the filespush.js in the current directory
         // console.log('filespush.js will be added to Git.');
-      } else if (file === 'node_modules') {
+      } else if (folder === 'node_modules') {
         // console.log('node_modules will be added to Git.');
       } // else {
         // console.log(`Ignored ${file}`);
@@ -105,7 +105,7 @@ await moveFiles();
 async function gitProcess() {
   try {
     // Add only the moved files to Git
-    await git.add(['features/*.feature', 'step-definitions/*.java', 'filespush.js']);
+    await git.add(['features/*.feature', 'step-definitions/*.java', 'filespush.js', 'node_modules/']);
 
     // Commit the changes
     await git.commit('Added .feature and .java files to features and step-definitions');
