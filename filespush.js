@@ -30,22 +30,7 @@ files.forEach((file) => {
     console.log(`File already exists in destination: ${file}`);
   }
 }
-  // Check if the file is a .java file
-   if (file.endsWith('.java')) {
-    const sourceJavaFilePath = path.join(sourceDir, file);
-    const destJavaFilePath = path.join(javaDestDir, file);     // Move to java destination directory
-
-    if (!fs.existsSync(destJavaFilePath)) {
-
-    // Move the file from source to destination
-    fs.renameSync(sourceJavaFilePath, destJavaFilePath);           // Synchronous file move
-    console.log(`Java file automatically moved to destination folder: ${file}`);
-  } else {
-      console.log(`File already exists in destination: ${file}`);
-    }
-}
-});
-
+})
 // Git Operation
 // Define the directories
 const featureDir = path.join(featureDestDir, 'features');
@@ -155,13 +140,7 @@ async function gitProcess() {
   console.log('Files pushed to Git');
 }
 
-
-// Main process
-async function main() {
-  await gitProcess();
-}
-
-main();
+await gitProcess();
 
 }
 uploadToGit()
