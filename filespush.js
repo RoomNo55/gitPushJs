@@ -92,22 +92,14 @@ async function gitProcess() {
     // Commit the changes
     await git.commit('Added .feature and .java files to features and step-definitions');
 
-
-    await git.push(['-u', 'origin', branchName ]);
-
-    // Stash any untracked or modified files
-    await git.stash({ '--include-untracked': null });
-
     // Pull the latest changes from the remote repository
     try {
-      await git.pull('origin', branchName, { '--rebase': 'true' }); // Use rebase to avoid merge commits
+      await git.pull('origin', branchName); // Use rebase to avoid merge commits
     } catch (pullError) {
       console.error('Error pulling changes:', pullError);
       return; // Exit the process if pulling fails
     }
 
-    // Reapply the stashed changes
-    await git.stash('pop');
 
     // Push the changes
     await git.push('origin', branchName);
@@ -115,24 +107,6 @@ async function gitProcess() {
   }  
   catch (err) {
     console.error('Git process failed:', err);
-  }
-
-  // Check if a rebase is in progress and abort it if necessary
-  const rebaseDirExists = await git.checkIsRepo() && await git.raw(['status']);
-  if (rebaseDirExists.includes('You have unmerged paths') || rebaseDirExists.includes('rebase in progress')) {
-    console.log('Aborting existing rebase...');
-    await git.rebase(['--continue']);
-  }
-
-  // Stash any untracked or modified files
-  await git.stash({ '--include-untracked': null });
-
-  // Pull the latest changes from the remote repository
-  try {
-    await git.pull('origin', branchName, { '--rebase': 'true' });
-  } catch (pullError) {
-    console.error('Error pulling changes:', pullError);
-    return; // Exit if the pull fails
   }
 
   // Check for merge conflicts after pulling
@@ -144,11 +118,6 @@ async function gitProcess() {
     return; // Exit if there are unresolved conflicts
   }
 
-  // Now restore only the relevant directories
-  await git.checkout(['origin/main', '--', 'features/', 'step-definitions/']);
-
-  // Reapply the stashed changes
-  await git.stash('pop');
 
   // Now push the changes to the remote
   await git.push(['-u', 'origin', branchName]);
