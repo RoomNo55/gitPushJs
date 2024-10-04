@@ -54,6 +54,24 @@ const stepDefDir = path.join(javaDestDir, 'step-definitions');
 // Initialize git
 const git = simpleGit();
 
+// Check if the current directory is a git repository
+async function checkGitRepo() {
+  try {
+    const isRepo = await git.checkIsRepo();
+    if (!isRepo) {
+      console.log('Not a Git repository. Initializing a new Git repository...');
+      await git.init();  // Initialize a new Git repository
+      console.log('Initialized a new Git repository.');
+    } else {
+      console.log('This is a Git repository.');
+    }
+  } catch (error) {
+    console.error('Error checking or initializing Git repository:', error);
+    process.exit(1); // Exit the script if an error occurs
+  }
+}
+await checkGitRepo();
+
 // Check if the remote "origin" already exists
 const remotes = await git.getRemotes(true); // List all remotes with detailed info
 const originRemote = remotes.find((remote) => remote.name === "origin");
