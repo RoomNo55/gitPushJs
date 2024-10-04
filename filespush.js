@@ -121,8 +121,6 @@ async function gitProcess() {
       } else {
         console.log(`Pushed changes to the remote branch ${branchName} with upstream set.`);
       }
-    } else {
-      console.log('No output from push command. Please check the repository state.');
     }
   }  
   catch (err) {
