@@ -116,7 +116,7 @@ async function gitProcess() {
     if (pushResponse && pushResponse && pushResponse.length > 0) {
       const outputMessages = pushResponse.map(output => output.trim()).join('\n');
       
-      if (outputMessages.includes("up to date")) {
+      if (outputMessages.includes("Already up to date")) {
         console.log('No commits done: No changes to push.');
       } else {
         console.log(`Pushed changes to the remote branch ${branchName} with upstream set.`);
