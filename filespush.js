@@ -107,21 +107,8 @@ async function gitProcess() {
     await git.stash('pop');
 
     // Push the changes
-    // await git.push('origin', branchName);
-    // console.log('Files pushed to Git');
-
-    const pushResponse = await git.pull(['-u', remoteName, branchName]);
-    
-    // Check if there are any commits done
-    if (pushResponse && pushResponse && pushResponse.length > 0) {
-      const outputMessages = pushResponse.map(output => output.trim()).join('\n');
-      
-      if (outputMessages.includes("Already up to date")) {
-        console.log('No commits done: No changes to push.');
-      } else {
-        console.log(`Pushed changes to the remote branch ${branchName} with upstream set.`);
-      }
-    }
+    await git.push('origin', branchName);
+    console.log('Files pushed to Git');
   }  
   catch (err) {
     console.error('Git process failed:', err);
