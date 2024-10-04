@@ -111,7 +111,6 @@ async function gitProcess() {
 
     // Push the changes
     await git.push('origin', branchName);
-    console.log('Files pushed to Git');
   }  
   catch (err) {
     console.error('Git process failed:', err);
@@ -149,7 +148,6 @@ async function gitProcess() {
 
   // Reapply the stashed changes
   await git.stash('pop');
-  console.log('-----')
 
   // Now push the changes to the remote
   await git.push(['-u', 'origin', branchName]);
