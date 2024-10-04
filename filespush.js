@@ -113,13 +113,18 @@ async function gitProcess() {
     const pushResponse = await git.push(['-u', remoteName, branchName]);
     
     // Check if there are any commits done
-    if (pushResponse && pushResponse.trim().includes("up to date")) {
-      console.log('No commits done: No changes to push.');
+    if (pushResponse && pushResponse && pushResponse.length > 0) {
+      const outputMessages = pushResponse.map(output => output.trim()).join('\n');
+      
+      if (outputMessages.includes("up to date")) {
+        console.log('No commits done: No changes to push.');
+      } else {
+        console.log(`Pushed changes to the remote branch ${branchName} with upstream set.`);
+      }
     } else {
-      console.log(`Pushed changes to the remote branch ${branchName} with upstream set.`);
+      console.log('No output from push command. Please check the repository state.');
     }
-  } 
-  
+  }  
   catch (err) {
     console.error('Git process failed:', err);
   }
