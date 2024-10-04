@@ -14,34 +14,43 @@ const files = fs.readdirSync(sourceDir);           // Reads the content of the s
 
 
 async function uploadToGit() {
-  // Move .feature and .java files to their respective directories
-  files.forEach((file) => {
-    if (file.endsWith(".feature")) {
-      const sourceFeatureFilePath = path.join(sourceDir, file);
-      const destFeatureFilePath = path.join(featureDestDir, file);
 
-      if (!fs.existsSync(destFeatureFilePath)) {
-        fs.renameSync(sourceFeatureFilePath, destFeatureFilePath);
-        console.log(`Feature file moved: ${file}`);
-      } else {
-        console.log(`File already exists: ${file}`);
-      }
+files.forEach((file) => {
+  // Check if the file is a .feature file
+  if (file.endsWith('.feature')) {
+    const sourceFeatureFilePath = path.join(sourceDir, file);
+    const destFeatureFilePath = path.join(featureDestDir, file);  // Move to feature destination directory
+
+    if (!fs.existsSync(destFeatureFilePath)) {
+
+    // Move the file from source to destination
+    fs.renameSync(sourceFeatureFilePath, destFeatureFilePath);           // Synchronous file move
+    console.log(`Feature file automatically moved to destination folder: ${file}`);
+  } else {
+    console.log(`File already exists in destination: ${file}`);
+  }
+}
+  // Check if the file is a .java file
+   if (file.endsWith('.java')) {
+    const sourceJavaFilePath = path.join(sourceDir, file);
+    const destJavaFilePath = path.join(javaDestDir, file);     // Move to java destination directory
+
+    if (!fs.existsSync(destJavaFilePath)) {
+
+    // Move the file from source to destination
+    fs.renameSync(sourceJavaFilePath, destJavaFilePath);           // Synchronous file move
+    console.log(`Java file automatically moved to destination folder: ${file}`);
+  } else {
+      console.log(`File already exists in destination: ${file}`);
     }
-
-    if (file.endsWith(".java")) {
-      const sourceJavaFilePath = path.join(sourceDir, file);
-      const destJavaFilePath = path.join(javaDestDir, file);
-
-      if (!fs.existsSync(destJavaFilePath)) {
-        fs.renameSync(sourceJavaFilePath, destJavaFilePath);
-        console.log(`Java file moved: ${file}`);
-      } else {
-        console.log(`File already exists: ${file}`);
-      }
-    }
-  });
+}
+});
 
 // Git Operation
+// Define the directories
+const featureDir = path.join(featureDestDir, 'features');
+const stepDefDir = path.join(javaDestDir, 'step-definitions');
+
 // Initialize git
 const git = simpleGit();
 
@@ -145,10 +154,15 @@ async function gitProcess() {
   await git.push(['-u', 'origin', branchName]);
   console.log('Files pushed to Git');
 }
-await gitProcess();
+
+
+// Main process
+async function main() {
+  await gitProcess();
 }
 
+main();
 
-uploadToGit()
+}
 
-
+uploadToGit();
