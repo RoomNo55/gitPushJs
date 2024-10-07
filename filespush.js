@@ -47,9 +47,6 @@ files.forEach((file) => {
 });
 
 // Git Operation
-// Define the directories
-const featureDir = path.join(featureDestDir, 'features');
-const stepDefDir = path.join(javaDestDir, 'step-definitions');
 
 // Initialize git
 const git = simpleGit();
