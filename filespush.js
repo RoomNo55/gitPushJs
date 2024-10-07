@@ -100,12 +100,12 @@ async function gitProcess() {
     await git.stash({ '--include-untracked': null });
 
     // Pull the latest changes from the remote repository
-    try {
-      await git.pull('origin', branchName, { '--rebase': 'true' }); // Use rebase to avoid merge commits
-    } catch (pullError) {
-      console.error('Error pulling changes:', pullError);
-      return; // Exit the process if pulling fails
-    }
+    // try {
+    //   await git.pull('origin', branchName, { '--rebase': 'true' }); // Use rebase to avoid merge commits
+    // } catch (pullError) {
+    //   console.error('Error pulling changes:', pullError);
+    //   return; // Exit the process if pulling fails
+    // }
 
     // Reapply the stashed changes
     await git.stash('pop');
@@ -118,18 +118,18 @@ async function gitProcess() {
   }
 
   // Check if a rebase is in progress and abort it if necessary
-  const rebaseDirExists = await git.checkIsRepo() && await git.raw(['status']);
-  if (rebaseDirExists.includes('You have unmerged paths') || rebaseDirExists.includes('rebase in progress')) {
-    console.log('Aborting existing rebase...');
-    await git.rebase(['--continue']);
-  }
+  // const rebaseDirExists = await git.checkIsRepo() && await git.raw(['status']);
+  // if (rebaseDirExists.includes('You have unmerged paths') || rebaseDirExists.includes('rebase in progress')) {
+  //   console.log('Aborting existing rebase...');
+  //   await git.rebase(['--continue']);
+  // }
 
   // Stash any untracked or modified files
   await git.stash({ '--include-untracked': null });
 
   // Pull the latest changes from the remote repository
   try {
-    await git.pull('origin', branchName, { '--rebase': 'true' });
+    await git.pull('origin', branchName);
   } catch (pullError) {
     console.error('Error pulling changes:', pullError);
     return; // Exit if the pull fails
@@ -145,7 +145,7 @@ async function gitProcess() {
   }
 
   // Now restore only the relevant directories
-  await git.checkout(['origin/main', '--', 'features/', 'step-definitions/']);
+  // await git.checkout(['origin/main', '--', 'features/', 'step-definitions/']);
 
   // Reapply the stashed changes
   await git.stash('pop');
