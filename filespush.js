@@ -97,7 +97,7 @@ async function gitProcess() {
     await git.push(['-u', 'origin', branchName ]);
 
     // Stash any untracked or modified files
-    await git.stash({ '--include-untracked': null });
+    // await git.stash({ '--include-untracked': null });
 
     // Pull the latest changes from the remote repository
     // try {
@@ -108,7 +108,7 @@ async function gitProcess() {
     // }
 
     // Reapply the stashed changes
-    await git.stash('pop');
+    // await git.stash('pop');
 
     // Push the changes
     await git.push('origin', branchName);
